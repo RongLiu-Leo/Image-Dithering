@@ -1,58 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Image to Base64 Converter with Dithering</title>
+    <title>Image to Base64 Converter</title>
 </head>
 <body>
     <input type="file" id="imageInput" onchange="convertToBase64()" accept="image/*"><br>
-    <div>
-        <div style="float:left; width: 50%;">
-            <h2>Original Image</h2>
-            <img id="imageOutputOriginal">
-        </div>
-        <div style="float:right; width: 50%;">
-            <h2>Dithered Image</h2>
-            <img id="imageOutputDithered">
-        </div>
-    </div>
+    <img id="imageOutput">
     
     <script>
         function convertToBase64() {
             var file = document.getElementById("imageInput").files[0];
             var reader = new FileReader();
             reader.onloadend = function() {
-                var imageOriginal = document.getElementById("imageOutputOriginal");
-                imageOriginal.src = reader.result;
-                
-                var canvas = document.createElement("canvas");
-                var context = canvas.getContext("2d");
-                var image = new Image();
-                image.onload = function() {
-                    canvas.width = image.width;
-                    canvas.height = image.height;
-                    context.drawImage(image, 0, 0);
-                    var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-                    var pixels = imageData.data;
-                    for (var i = 0; i < pixels.length; i += 4) {
-                        var r = pixels[i];
-                        var g = pixels[i + 1];
-                        var b = pixels[i + 2];
-                        var gray = (r + g + b) / 3;
-                        if (gray > 127) {
-                            pixels[i] = 255;
-                            pixels[i + 1] = 255;
-                            pixels[i + 2] = 255;
-                        } else {
-                            pixels[i] = 0;
-                            pixels[i + 1] = 0;
-                            pixels[i + 2] = 0;
-                        }
-                    }
-                    context.putImageData(imageData, 0, 0);
-                    var imageDithered = document.getElementById("imageOutputDithered");
-                    imageDithered.src = canvas.toDataURL();
-                }
-                image.src = reader.result;
+                document.getElementById("imageOutput").src = reader.result;
             }
             reader.readAsDataURL(file);
         }
