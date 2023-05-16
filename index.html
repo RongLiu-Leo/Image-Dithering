@@ -5,15 +5,17 @@
 </head>
 <body>
     <input type="file" id="imageInput" onchange="convertToBase64()" accept="image/*"><br>
-    <img id="imageOutput">
-    <img>
+    <div>
+        <img id="originalImage">
+        <img id="ditheredImage">
+    </div>
     
     <script>
         function convertToBase64() {
             var file = document.getElementById("imageInput").files[0];
             var reader = new FileReader();
             reader.onloadend = function() {
-                document.getElementById("imageOutput").src = reader.result;
+                document.getElementById("originalImage").src = reader.result;
             }
             reader.readAsDataURL(file);
         }
