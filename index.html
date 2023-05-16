@@ -5,15 +5,37 @@
 </head>
 <body>
     <input type="file" id="imageInput" onchange="convertToBase64()" accept="image/*"><br>
-    <img id="imageOutput">
-    <img>
+    <div>
+        <img id="originalImage">
+        <img id="ditheredImage">
+    </div>
     
     <script>
         function convertToBase64() {
             var file = document.getElementById("imageInput").files[0];
             var reader = new FileReader();
             reader.onloadend = function() {
-                document.getElementById("imageOutput").src = reader.result;
+                var originalImage = document.getElementById("originalImage");
+                originalImage.src = reader.result;
+                var canvas = document.createElement("canvas");
+                var ctx = canvas.getContext("2d");
+                var ditheredImage = document.getElementById("ditheredImage");
+                ditheredImage.onload = function() {
+                    ctx.drawImage(ditheredImage, 0, 0);
+                    var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    for (var i = 0; i < imageData.data.length; i += 4) {
+                        var r = imageData.data[i];
+                        var g = imageData.data[i + 1];
+                        var b = imageData.data[i + 2];
+                        var gray = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+                        var threshold = 128;
+                        var value = gray < threshold ? 0 : 255;
+                        imageData.data[i] = imageData.data[i + 1] = imageData.data[i + 2] = value;
+                    }
+                    ctx.putImageData(imageData, 0, 0);
+                    ditheredImage.src = canvas.toDataURL();
+                };
+                ditheredImage.src = reader.result;
             }
             reader.readAsDataURL(file);
         }
