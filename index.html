@@ -14,10 +14,11 @@
         function convertToBase64() {
             var file = document.getElementById("imageInput").files[0];
             var reader = new FileReader();
+            reader.readAsDataURL(file);
             reader.onloadend = function() {
                 document.getElementById("originalImage").src = reader.result;
+                document.getElementById("ditheredImage").src = reader.result;
             }
-            reader.readAsDataURL(file);
         }
     </script>
 </body>
