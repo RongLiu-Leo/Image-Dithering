@@ -25,6 +25,8 @@
                 var ctx = canvas.getContext("2d");
                 var ditheredImage = document.getElementById("ditheredImage");
                 ditheredImage.src = reader.result;
+
+                
                 ditheredImage.onload = function() {
                     ctx.drawImage(ditheredImage, 0, 0);
                     var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
