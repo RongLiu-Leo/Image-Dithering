@@ -4,16 +4,24 @@
     <title>Image Dithering</title>
 </head>
 <body>
-    <input type="file" id="imageInput" onchange="loadImage()" accept="image/*"><br>
-    <select id="ditheringMethod" onchange="applyDithering()">
-        <option value="original">Original</option>
-        <option value="threshold">Threshold</option>
-        <option value="random">Random</option>
-        <!-- Add more dithering methods as options -->
-    </select>
+    
     <div>
-        <img id="originalImage", style="width: 35%;float: left;margin-left: 10%;", src="USC.png">
-        <img id="ditheredImage", style="width: 35%;float: right;margin-right: 10%", src="USC.png">
+        <div style="width: 35%;float: left;margin-left: 10%;" align="center">
+            <input style="display: none; text-align: center;" type="file" id="imageInput" onchange="loadImage()" accept="image/*"/>
+            <input type="button" value="Choose an image" onclick="document.getElementById('imageInput').click();" />
+            <!-- <input style="text-align: center;" type="file" id="imageInput" onchange="loadImage()" accept="image/*"><br> -->
+
+            <img id="originalImage" style="width: 100%; margin-top: 1rem;">
+        </div>
+        <div style="width: 35%;float: right;margin-right: 10%;" align="center">
+            <select style="text-align: center;" id="ditheringMethod" onchange="applyDithering()">
+                <option value="original">Original</option>
+                <option value="threshold">Threshold</option>
+                <option value="random">Random</option>
+                <!-- Add more dithering methods as options -->
+            </select>
+            <img id="ditheredImage" style="width: 100%; margin-top: 1rem;">
+        </div>
     </div>
     
     <script>
