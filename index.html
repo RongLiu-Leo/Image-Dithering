@@ -4,45 +4,79 @@
     <title>Image Dithering</title>
 </head>
 <body>
-    <input type="file" id="imageInput" onchange="convertToBase64()" accept="image/*"><br>
+    <input type="file" id="imageInput" onchange="loadImage()" accept="image/*"><br>
+    <select id="ditheringMethod" onchange="applyDithering()">
+        <option value="original">Original</option>
+        <option value="threshold">Threshold</option>
+        <option value="random">Random</option>
+        <!-- Add more dithering methods as options -->
+    </select>
     <div>
-        <img id="originalImage">
-        <img id="ditheredImage">
+        <img id="originalImage", style="width: 35%;float: left;margin-left: 10%;", src="USC.png">
+        <img id="ditheredImage", style="width: 35%;float: right;margin-right: 10%", src="USC.png">
     </div>
     
     <script>
-        function convertToBase64() {
+        function loadImage() {
             var file = document.getElementById("imageInput").files[0];
             var reader = new FileReader();
             reader.readAsDataURL(file);
-
 
             reader.onloadend = function() {
                 var originalImage = document.getElementById("originalImage");
                 originalImage.src = reader.result;
 
-                var canvas = document.createElement("canvas");
-                var ctx = canvas.getContext("2d");
                 var ditheredImage = document.getElementById("ditheredImage");
                 ditheredImage.src = reader.result;
-
-                
-                ditheredImage.onload = function() {
-                    ctx.drawImage(ditheredImage, 0, 0);
-                    var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                    for (var i = 0; i < imageData.data.length; i += 4) {
-                        var r = imageData.data[i];
-                        var g = imageData.data[i + 1];
-                        var b = imageData.data[i + 2];
-                        var gray = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-                        var threshold = 128;
-                        var value = gray < threshold ? 0 : 255;
-                        imageData.data[i] = imageData.data[i + 1] = imageData.data[i + 2] = value;
-                    }
-                    ctx.putImageData(imageData, 0, 0);
-                    ditheredImage.src = canvas.toDataURL();
-                };
+                document.getElementById("ditheringMethod").value = "original";
             }
+        }
+        
+        function applyDithering() {
+            document.getElementById("ditheredImage").src = document.getElementById("originalImage").src;
+            var canvas = document.createElement("canvas");
+            var image = document.getElementById("ditheredImage");
+            var ditheringMethod = document.getElementById("ditheringMethod").value;
+
+            var ctx = canvas.getContext("2d");
+            canvas.width = image.naturalWidth;
+            canvas.height = image.naturalHeight;
+            ctx.drawImage(image, 0, 0);
+            var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            console.log(canvas.width,canvas.height);
+            if (ditheringMethod === "threshold"){
+                for (var i = 0; i < imageData.data.length; i += 4) {
+                var r = imageData.data[i];
+                var g = imageData.data[i + 1];
+                var b = imageData.data[i + 2];
+                
+                r = r < 128 ? 0 : 255;
+                g = g < 128 ? 0 : 255;
+                b = b < 128 ? 0 : 255; 
+                
+                imageData.data[i] = r;
+                imageData.data[i + 1] = g;
+                imageData.data[i + 2] = b;
+                }
+            }
+            else if (ditheringMethod === "random"){
+                for (var i = 0; i < imageData.data.length; i += 4) {
+                var r = imageData.data[i];
+                var g = imageData.data[i + 1];
+                var b = imageData.data[i + 2];
+                
+                r = r < Math.random() * 255 ? 0 : 255;
+                g = g < Math.random() * 255 ? 0 : 255;
+                b = b < Math.random() * 255 ? 0 : 255;
+                
+                imageData.data[i] = r;
+                imageData.data[i + 1] = g;
+                imageData.data[i + 2] = b;
+                }
+            }
+            
+            ctx.putImageData(imageData, 0, 0);
+            image.src = canvas.toDataURL();
         }
     </script>
 </body>
