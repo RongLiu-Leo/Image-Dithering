@@ -22,6 +22,7 @@
             </select>
             <img id="ditheredImage" style="width: 100%; margin-top: 1rem;">
         </div>
+        <p id="storageInfo"></p>
     </div>
     
     <script>
@@ -45,6 +46,13 @@
             var canvas = document.createElement("canvas");
             var image = document.getElementById("ditheredImage");
             var ditheringMethod = document.getElementById("ditheringMethod").value;
+            if (ditheringMethod === "original"){
+                var originalSize = Math.round(document.getElementById("originalImage").src.length *0.75 / 1024); // Size of original image in KB
+                var ditheredSize = Math.round(document.getElementById("ditheredImage").src.length *0.75 / 1024); // Size of dithered image in KB 
+                document.getElementById("storageInfo").innerText = "Original Image Size: " + originalSize + " KB\nDithered Image Size: " + ditheredSize + " KB";
+ 
+                return
+            }
 
             var ctx = canvas.getContext("2d");
             canvas.width = image.naturalWidth;
@@ -85,6 +93,11 @@
             
             ctx.putImageData(imageData, 0, 0);
             image.src = canvas.toDataURL();
+            var originalSize = Math.round(document.getElementById("originalImage").src.length *0.75 / 1024); // Size of original image in KB
+            var ditheredSize = Math.round(document.getElementById("ditheredImage").src.length *0.75 / 1024); // Size of dithered image in KB
+            
+            document.getElementById("storageInfo").innerText = "Original Image Size: " + originalSize + " KB\nDithered Image Size: " + ditheredSize + " KB";
+        
         }
     </script>
 </body>
